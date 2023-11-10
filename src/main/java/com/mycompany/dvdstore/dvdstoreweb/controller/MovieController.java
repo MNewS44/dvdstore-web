@@ -1,30 +1,26 @@
 package com.mycompany.dvdstore.dvdstoreweb.controller;
 
-import com.mycompany.dvdstore.entity.Movie;
-import com.mycompany.dvdstore.service.MovieServiceInterface;
+import com.mycompany.dvdstore.core.controller.MovieControllerInterface;
+import com.mycompany.dvdstore.core.service.MovieServiceInterface;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Scanner;
 
 @Controller
-public class MovieController implements MovieControllerInterface{
+@RequestMapping("/movie")
+public class MovieController implements MovieControllerInterface {
     public MovieController(MovieServiceInterface movieService) {
         this.movieService = movieService;
     }
 
     private final MovieServiceInterface movieService;
 
-    public void addUsingConsole(){
-        System.out.println("Saisir le titre du film : ");
-        Scanner sc = new Scanner(System.in);
-        String titre = sc.nextLine();
-        Movie movie = new Movie();
-        movie.setTitle(titre);
-
-        System.out.println("Saisir le genre du film : ");
-        String genre = sc.nextLine();
-        movie.setGenre(genre);
-
-        movieService.registerMovie(movie);
+    @RequestMapping("/${id}")
+    public String displayMovieCard(@PathVariable("id") long id, Model model){
+        model.addAttribute("movie", movieService.getMovieById(id));
+        return "movie-details";
     }
 }
